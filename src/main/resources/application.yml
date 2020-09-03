@@ -1,0 +1,10 @@
+cloud:
+  aws:
+    region: us-north-1
+    auto: false
+  credentials:
+    access-key:
+    secret-key:
+    session-token:
+  endpoint:
+    uri: https://sqs.us-east-1.amazonaws.com/112310659700/SimpleQueue
