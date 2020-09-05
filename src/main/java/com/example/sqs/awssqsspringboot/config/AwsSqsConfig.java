@@ -6,10 +6,14 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sqs.AmazonSQSAsync;
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 @Configuration
+@EnableConfigurationProperties
 public class AwsSqsConfig {
 
     @Value("${cloud.aws.region.static}")
@@ -24,14 +28,17 @@ public class AwsSqsConfig {
     @Value("${cloud.aws.credentials.session-token}")
     private String sessionToken;
 
+    @Bean
     public QueueMessagingTemplate queueMessagingTemplate(){
         return new QueueMessagingTemplate(amazonSQSAsync());
     }
 
-    private AmazonSQSAsync amazonSQSAsync() {
+    @Bean
+    @Primary
+    public AmazonSQSAsync amazonSQSAsync() {
         return AmazonSQSAsyncClientBuilder.standard()
                 .withRegion(Regions.US_EAST_1)
-                .withCredentials(new AWSStaticCredentialsProvider(new BasicSessionCredentials("","","")))
+                .withCredentials(new AWSStaticCredentialsProvider(new BasicSessionCredentials(accessKey,secretKey,sessionToken)))
                 .build();
     }
 }
